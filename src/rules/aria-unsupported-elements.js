@@ -8,28 +8,24 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import {
-  aria,
-  dom,
-} from 'aria-query';
-import { propName } from 'jsx-ast-utils';
-import { generateObjSchema } from '../util/schemas';
-import getElementType from '../util/getElementType';
+import { aria, dom } from "aria-query";
+import { propName } from "jsx-ast-utils";
+import { generateObjSchema } from "../util/schemas";
+import getElementType from "../util/getElementType";
 
-const errorMessage = (invalidProp) => (
+const errorMessage = (invalidProp) =>
   `This element does not support ARIA roles, states and properties. \
-Try removing the prop '${invalidProp}'.`
-);
+Try removing the prop '${invalidProp}'.`;
 
-const invalidAttributes = new Set(aria.keys().concat('role'));
+const invalidAttributes = new Set(aria.keys().concat("role"));
 
 const schema = generateObjSchema();
 
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/aria-unsupported-elements.md',
-      description: 'Enforce that elements that do not support ARIA roles, states, and properties do not have those attributes.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/aria-unsupported-elements.md",
+      description: "ARIA 속성을 지원하지 않는 요소에 해당 속성을 사용하지 않도록 강제합니다.",
     },
     schema: [schema],
   },
@@ -40,9 +36,7 @@ export default {
       JSXOpeningElement: (node) => {
         const nodeType = elementType(node);
         const nodeAttrs = dom.get(nodeType) || {};
-        const {
-          reserved: isReservedNodeType = false,
-        } = nodeAttrs;
+        const { reserved: isReservedNodeType = false } = nodeAttrs;
 
         // If it's not reserved, then it can have aria-* roles, states, and properties
         if (isReservedNodeType === false) {
@@ -50,7 +44,7 @@ export default {
         }
 
         node.attributes.forEach((prop) => {
-          if (prop.type === 'JSXSpreadAttribute') {
+          if (prop.type === "JSXSpreadAttribute") {
             return;
           }
 

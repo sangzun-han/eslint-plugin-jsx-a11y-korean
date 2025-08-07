@@ -6,10 +6,10 @@
 // ----------------------------------------------------------------------------
 // Rule Definition
 // ----------------------------------------------------------------------------
-import { runVirtualRule } from 'axe-core';
-import { getLiteralPropValue, getProp } from 'jsx-ast-utils';
-import { generateObjSchema, arraySchema } from '../util/schemas';
-import getElementType from '../util/getElementType';
+import { runVirtualRule } from "axe-core";
+import { getLiteralPropValue, getProp } from "jsx-ast-utils";
+import { generateObjSchema, arraySchema } from "../util/schemas";
+import getElementType from "../util/getElementType";
 
 const schema = generateObjSchema({
   inputComponents: arraySchema,
@@ -18,8 +18,8 @@ const schema = generateObjSchema({
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/autocomplete-valid.md',
-      description: 'Enforce that autocomplete attributes are used correctly.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/autocomplete-valid.md",
+      description: "`autocomplete` 속성이 정확하게 사용되도록 강제합니다.",
     },
     schema: [schema],
   },
@@ -30,18 +30,18 @@ export default {
       JSXOpeningElement: (node) => {
         const options = context.options[0] || {};
         const { inputComponents = [] } = options;
-        const inputTypes = ['input'].concat(inputComponents);
+        const inputTypes = ["input"].concat(inputComponents);
 
         const elType = elementType(node);
-        const autocomplete = getLiteralPropValue(getProp(node.attributes, 'autocomplete'));
+        const autocomplete = getLiteralPropValue(getProp(node.attributes, "autocomplete"));
 
-        if (typeof autocomplete !== 'string' || !inputTypes.includes(elType)) {
+        if (typeof autocomplete !== "string" || !inputTypes.includes(elType)) {
           return;
         }
 
-        const type = getLiteralPropValue(getProp(node.attributes, 'type'));
-        const { violations } = runVirtualRule('autocomplete-valid', {
-          nodeName: 'input',
+        const type = getLiteralPropValue(getProp(node.attributes, "type"));
+        const { violations } = runVirtualRule("autocomplete-valid", {
+          nodeName: "input",
           attributes: {
             autocomplete,
             // Which autocomplete is valid depends on the input type

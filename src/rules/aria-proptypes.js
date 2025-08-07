@@ -7,54 +7,56 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { aria } from 'aria-query';
-import { getLiteralPropValue, getPropValue, propName } from 'jsx-ast-utils';
-import { generateObjSchema } from '../util/schemas';
+import { aria } from "aria-query";
+import { getLiteralPropValue, getPropValue, propName } from "jsx-ast-utils";
+import { generateObjSchema } from "../util/schemas";
 
 const errorMessage = (name, type, permittedValues) => {
   switch (type) {
-    case 'tristate':
-      return `The value for ${name} must be a boolean or the string "mixed".`;
-    case 'token':
-      return `The value for ${name} must be a single token from the following: ${permittedValues}.`;
-    case 'tokenlist':
-      return `The value for ${name} must be a list of one or more \
-tokens from the following: ${permittedValues}.`;
-    case 'idlist':
-      return `The value for ${name} must be a list of strings that represent DOM element IDs (idlist)`;
-    case 'id':
-      return `The value for ${name} must be a string that represents a DOM element ID`;
-    case 'boolean':
-    case 'string':
-    case 'integer':
-    case 'number':
+    case "tristate":
+      return `${name} 속성 값은 boolean 또는 문자열 "mixed"여야 합니다.`;
+    case "token":
+      return `${name} 속성 값은 다음 중 하나여야 합니다: ${permittedValues.join(", ")}.`;
+    case "tokenlist":
+      return `${name} 속성 값은 다음 중 하나 이상의 값으로 이루어진 공백 구분 문자열이어야 합니다: ${permittedValues.join(
+        ", "
+      )}.`;
+    case "idlist":
+      return `${name} 속성 값은 DOM 요소 ID를 나타내는 문자열들의 공백 구분 목록이어야 합니다.`;
+    case "id":
+      return `${name} 속성 값은 DOM 요소 ID를 나타내는 문자열이어야 합니다.`;
+    case "boolean":
+    case "string":
+    case "integer":
+    case "number":
     default:
-      return `The value for ${name} must be a ${type}.`;
+      return `${name} 속성 값은 ${type} 타입이어야 합니다.`;
   }
 };
 
 const validityCheck = (value, expectedType, permittedValues) => {
   switch (expectedType) {
-    case 'boolean':
-      return typeof value === 'boolean';
-    case 'string':
-    case 'id':
-      return typeof value === 'string';
-    case 'tristate':
-      return typeof value === 'boolean' || value === 'mixed';
-    case 'integer':
-    case 'number':
+    case "boolean":
+      return typeof value === "boolean";
+    case "string":
+    case "id":
+      return typeof value === "string";
+    case "tristate":
+      return typeof value === "boolean" || value === "mixed";
+    case "integer":
+    case "number":
       // Booleans resolve to 0/1 values so hard check that it's not first.
       // eslint-disable-next-line no-restricted-globals
-      return typeof value !== 'boolean' && isNaN(Number(value)) === false;
-    case 'token':
-      return permittedValues.indexOf(typeof value === 'string' ? value.toLowerCase() : value) > -1;
-    case 'idlist':
-      return typeof value === 'string'
-        && value.split(' ').every((token) => validityCheck(token, 'id', []));
-    case 'tokenlist':
-      return typeof value === 'string'
-        && value.split(' ').every((token) => permittedValues.indexOf(token.toLowerCase()) > -1);
+      return typeof value !== "boolean" && isNaN(Number(value)) === false;
+    case "token":
+      return permittedValues.indexOf(typeof value === "string" ? value.toLowerCase() : value) > -1;
+    case "idlist":
+      return typeof value === "string" && value.split(" ").every((token) => validityCheck(token, "id", []));
+    case "tokenlist":
+      return (
+        typeof value === "string" &&
+        value.split(" ").every((token) => permittedValues.indexOf(token.toLowerCase()) > -1)
+      );
     default:
       return false;
   }
@@ -66,8 +68,8 @@ export default {
   validityCheck,
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/aria-proptypes.md',
-      description: 'Enforce ARIA state and property values are valid.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/aria-proptypes.md",
+      description: "ARIA 상태 및 속성 값이 명세에 맞는지 검사합니다.",
     },
     schema: [schema],
   },
@@ -78,7 +80,7 @@ export default {
       const normalizedName = name.toLowerCase();
 
       // Not a valid aria-* state or property.
-      if (normalizedName.indexOf('aria-') !== 0 || aria.get(normalizedName) === undefined) {
+      if (normalizedName.indexOf("aria-") !== 0 || aria.get(normalizedName) === undefined) {
         return;
       }
 
