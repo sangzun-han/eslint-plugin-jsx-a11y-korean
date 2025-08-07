@@ -58,7 +58,7 @@ export default {
           if (hasLabel === false || rolePropValue !== "img" || isSpan === false) {
             context.report({
               node,
-              message: errorMessage,
+              messageId: "emojiNotAccessible",
             });
           }
         }
