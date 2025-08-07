@@ -8,19 +8,14 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { dom, roles } from 'aria-query';
-import {
-  getProp,
-  getLiteralPropValue,
-  propName,
-} from 'jsx-ast-utils';
-import { generateObjSchema } from '../util/schemas';
-import getElementType from '../util/getElementType';
-import isSemanticRoleElement from '../util/isSemanticRoleElement';
+import { dom, roles } from "aria-query";
+import { getProp, getLiteralPropValue, propName } from "jsx-ast-utils";
+import { generateObjSchema } from "../util/schemas";
+import getElementType from "../util/getElementType";
+import isSemanticRoleElement from "../util/isSemanticRoleElement";
 
-const errorMessage = (role, requiredProps) => (
-  `Elements with the ARIA role "${role}" must have the following attributes defined: ${String(requiredProps).toLowerCase()}`
-);
+const errorMessage = (role, requiredProps) =>
+  `ARIA 역할 "${role}"이(가) 있는 요소는 다음 속성을 모두 포함해야 합니다: ${String(requiredProps).toLowerCase()}`;
 
 const schema = generateObjSchema();
 
@@ -29,8 +24,8 @@ const roleKeys = roles.keys();
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/role-has-required-aria-props.md',
-      description: 'Enforce that elements with ARIA roles must have all required attributes for that role.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/role-has-required-aria-props.md",
+      description: "ARIA role이 명시된 요소는 해당 역할에 필요한 속성을 모두 포함해야 합니다.",
     },
     schema: [schema],
   },
@@ -41,7 +36,7 @@ export default {
       JSXAttribute: (attribute) => {
         const name = propName(attribute).toLowerCase();
 
-        if (name !== 'role') {
+        if (name !== "role") {
           return;
         }
 
@@ -60,9 +55,8 @@ export default {
           return;
         }
 
-        const normalizedValues = String(roleAttrValue).toLowerCase().split(' ');
-        const validRoles = normalizedValues
-          .filter((val) => roleKeys.indexOf(val) > -1);
+        const normalizedValues = String(roleAttrValue).toLowerCase().split(" ");
+        const validRoles = normalizedValues.filter((val) => roleKeys.indexOf(val) > -1);
 
         // Check semantic DOM elements
         // For example, <input type="checkbox" role="switch" />
@@ -71,14 +65,11 @@ export default {
         }
         // Check arbitrary DOM elements
         validRoles.forEach((role) => {
-          const {
-            requiredProps: requiredPropKeyValues,
-          } = roles.get(role);
+          const { requiredProps: requiredPropKeyValues } = roles.get(role);
           const requiredProps = Object.keys(requiredPropKeyValues);
 
           if (requiredProps.length > 0) {
-            const hasRequiredProps = requiredProps
-              .every((prop) => getProp(attributes, prop));
+            const hasRequiredProps = requiredProps.every((prop) => getProp(attributes, prop));
             if (hasRequiredProps === false) {
               context.report({
                 node: attribute,

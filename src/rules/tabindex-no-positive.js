@@ -7,18 +7,18 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { getLiteralPropValue, propName } from 'jsx-ast-utils';
-import { generateObjSchema } from '../util/schemas';
+import { getLiteralPropValue, propName } from "jsx-ast-utils";
+import { generateObjSchema } from "../util/schemas";
 
-const errorMessage = 'Avoid positive integer values for tabIndex.';
+const errorMessage = "tabIndex에 양의 정수를 사용하는 것은 피해야 합니다.";
 
 const schema = generateObjSchema();
 
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/tabindex-no-positive.md',
-      description: 'Enforce `tabIndex` value is not greater than zero.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/tabindex-no-positive.md",
+      description: "`tabIndex` 값이 0보다 크지 않도록 강제합니다.",
     },
     schema: [schema],
   },
@@ -28,7 +28,7 @@ export default {
       const name = propName(attribute).toUpperCase();
 
       // Check if tabIndex is the attribute
-      if (name !== 'TABINDEX') {
+      if (name !== "TABINDEX") {
         return;
       }
 

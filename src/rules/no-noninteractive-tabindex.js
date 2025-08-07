@@ -8,39 +8,36 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { dom } from 'aria-query';
-import type { JSXOpeningElement } from 'ast-types-flow';
-import {
-  getProp,
-  getLiteralPropValue,
-} from 'jsx-ast-utils';
-import includes from 'array-includes';
-import type { ESLintConfig, ESLintContext, ESLintVisitorSelectorConfig } from '../../flow/eslint';
-import getElementType from '../util/getElementType';
-import isInteractiveElement from '../util/isInteractiveElement';
-import isInteractiveRole from '../util/isInteractiveRole';
-import isNonLiteralProperty from '../util/isNonLiteralProperty';
-import { generateObjSchema, arraySchema } from '../util/schemas';
-import getTabIndex from '../util/getTabIndex';
+import { dom } from "aria-query";
+import type { JSXOpeningElement } from "ast-types-flow";
+import { getProp, getLiteralPropValue } from "jsx-ast-utils";
+import includes from "array-includes";
+import type { ESLintConfig, ESLintContext, ESLintVisitorSelectorConfig } from "../../flow/eslint";
+import getElementType from "../util/getElementType";
+import isInteractiveElement from "../util/isInteractiveElement";
+import isInteractiveRole from "../util/isInteractiveRole";
+import isNonLiteralProperty from "../util/isNonLiteralProperty";
+import { generateObjSchema, arraySchema } from "../util/schemas";
+import getTabIndex from "../util/getTabIndex";
 
-const errorMessage = '`tabIndex` should only be declared on interactive elements.';
+const errorMessage = "`tabIndex`는 인터랙티브한 요소에만 선언되어야 합니다.";
 
 const schema = generateObjSchema({
   roles: {
     ...arraySchema,
-    description: 'An array of ARIA roles',
+    description: "허용할 ARIA role 목록",
   },
   tags: {
     ...arraySchema,
-    description: 'An array of HTML tag names',
+    description: "허용할 태그 이름 목록",
   },
 });
 
 export default ({
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/no-noninteractive-tabindex.md',
-      description: '`tabIndex` should only be declared on interactive elements.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/no-noninteractive-tabindex.md",
+      description: "tabIndex는 오직 인터랙티브 요소에만 적용되어야 합니다.",
     },
     schema: [schema],
   },
@@ -52,13 +49,13 @@ export default ({
       JSXOpeningElement: (node: JSXOpeningElement) => {
         const type = elementType(node);
         const { attributes } = node;
-        const tabIndexProp = getProp(attributes, 'tabIndex');
+        const tabIndexProp = getProp(attributes, "tabIndex");
         const tabIndex = getTabIndex(tabIndexProp);
         // Early return;
-        if (typeof tabIndex === 'undefined') {
+        if (typeof tabIndex === "undefined") {
           return;
         }
-        const role = getLiteralPropValue(getProp(node.attributes, 'role'));
+        const role = getLiteralPropValue(getProp(node.attributes, "role"));
 
         if (!dom.has(type)) {
           // Do not test higher level JSX components, as we do not know what
@@ -66,28 +63,21 @@ export default ({
           return;
         }
         // Allow for configuration overrides.
-        const {
-          tags,
-          roles,
-          allowExpressionValues,
-        } = (options[0] || {});
+        const { tags, roles, allowExpressionValues } = options[0] || {};
         if (tags && includes(tags, type)) {
           return;
         }
         if (roles && includes(roles, role)) {
           return;
         }
-        if (
-          allowExpressionValues === true
-          && isNonLiteralProperty(attributes, 'role')
-        ) {
+        if (allowExpressionValues === true && isNonLiteralProperty(attributes, "role")) {
           // Special case if role is assigned using ternary with literals on both side
-          const roleProp = getProp(attributes, 'role');
-          if (roleProp && roleProp.type === 'JSXAttribute' && roleProp.value.type === 'JSXExpressionContainer') {
-            if (roleProp.value.expression.type === 'ConditionalExpression') {
+          const roleProp = getProp(attributes, "role");
+          if (roleProp && roleProp.type === "JSXAttribute" && roleProp.value.type === "JSXExpressionContainer") {
+            if (roleProp.value.expression.type === "ConditionalExpression") {
               if (
-                roleProp.value.expression.consequent.type === 'Literal'
-                && roleProp.value.expression.alternate.type === 'Literal'
+                roleProp.value.expression.consequent.type === "Literal" &&
+                roleProp.value.expression.alternate.type === "Literal"
               ) {
                 return;
               }
@@ -95,15 +85,10 @@ export default ({
           }
           return;
         }
-        if (
-          isInteractiveElement(type, attributes)
-          || isInteractiveRole(type, attributes)
-        ) {
+        if (isInteractiveElement(type, attributes) || isInteractiveRole(type, attributes)) {
           return;
         }
-        if (
-          tabIndex >= 0
-        ) {
+        if (tabIndex >= 0) {
           context.report({
             node: tabIndexProp,
             message: errorMessage,

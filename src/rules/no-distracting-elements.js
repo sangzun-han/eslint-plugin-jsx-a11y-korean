@@ -7,17 +7,13 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { generateObjSchema, enumArraySchema } from '../util/schemas';
-import getElementType from '../util/getElementType';
+import { generateObjSchema, enumArraySchema } from "../util/schemas";
+import getElementType from "../util/getElementType";
 
-const errorMessage = (element) => (
-  `Do not use <${element}> elements as they can create visual accessibility issues and are deprecated.`
-);
+const errorMessage = (element) =>
+  `<${element}> 요소는 시각적 접근성에 문제가 있으며, 사용이 권장되지 않습니다. 사용하지 마세요.`;
 
-const DEFAULT_ELEMENTS = [
-  'marquee',
-  'blink',
-];
+const DEFAULT_ELEMENTS = ["marquee", "blink"];
 
 const schema = generateObjSchema({
   elements: enumArraySchema(DEFAULT_ELEMENTS),
@@ -26,8 +22,8 @@ const schema = generateObjSchema({
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/no-distracting-elements.md',
-      description: 'Enforce distracting elements are not used.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/no-distracting-elements.md",
+      description: "시각적으로 산만한 요소(`<marquee>`, `<blink>` 등)의 사용을 금지합니다.",
     },
     schema: [schema],
   },

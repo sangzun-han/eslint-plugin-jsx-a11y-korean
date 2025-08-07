@@ -7,16 +7,16 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { propName, getPropValue } from 'jsx-ast-utils';
-import { dom } from 'aria-query';
-import { generateObjSchema } from '../util/schemas';
-import getElementType from '../util/getElementType';
+import { propName, getPropValue } from "jsx-ast-utils";
+import { dom } from "aria-query";
+import { generateObjSchema } from "../util/schemas";
+import getElementType from "../util/getElementType";
 
-const errorMessage = 'The autoFocus prop should not be enabled, as it can reduce usability and accessibility for users.';
+const errorMessage = "autoFocus 속성을 사용하지 마세요. 이 속성은 사용성과 접근성을 저하시킬 수 있습니다.";
 
 const schema = generateObjSchema({
   ignoreNonDOM: {
-    type: 'boolean',
+    type: "boolean",
     default: false,
   },
 });
@@ -24,8 +24,8 @@ const schema = generateObjSchema({
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/no-autofocus.md',
-      description: 'Enforce autoFocus prop is not enabled.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/no-autofocus.md",
+      description: "`autoFocus` 속성 사용을 금지합니다.",
     },
     schema: [schema],
   },
@@ -47,7 +47,11 @@ export default {
         }
 
         // Fail if autoFocus is used and the value is anything other than false (either via an expression or string literal).
-        if (propName(attribute) === 'autoFocus' && getPropValue(attribute) !== false && getPropValue(attribute) !== 'false') {
+        if (
+          propName(attribute) === "autoFocus" &&
+          getPropValue(attribute) !== false &&
+          getPropValue(attribute) !== "false"
+        ) {
           context.report({
             node: attribute,
             message: errorMessage,
