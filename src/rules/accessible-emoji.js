@@ -15,7 +15,7 @@ import getElementType from "../util/getElementType";
 import isHiddenFromScreenReader from "../util/isHiddenFromScreenReader";
 
 const errorMessage =
-  'Emojis should be wrapped in <span>, have role="img", and have an accessible description with aria-label or aria-labelledby.';
+  '이모지를 사용할 때는 <span> 태그로 감싸고, 스크린 리더가 인식할 수 있도록 role="img"과 접근성 라벨(aria-label 또는 aria-labelledby)을 함께 지정해야 합니다.';
 
 const schema = generateObjSchema();
 
