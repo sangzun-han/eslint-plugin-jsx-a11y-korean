@@ -169,7 +169,7 @@ export default {
     const elementType = getElementType(context);
 
     return {
-      JSXOpeningElement(node) {₩
+      JSXOpeningElement(node) {
         const nodeType = elementType(node);
         if (!typesToValidate.has(nodeType)) return;
 
