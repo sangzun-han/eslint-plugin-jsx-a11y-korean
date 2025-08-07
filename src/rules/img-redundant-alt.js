@@ -7,21 +7,18 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { getProp, getLiteralPropValue } from 'jsx-ast-utils';
-import includes from 'array-includes';
-import stringIncludes from 'string.prototype.includes';
-import safeRegexTest from 'safe-regex-test';
-import { generateObjSchema, arraySchema } from '../util/schemas';
-import getElementType from '../util/getElementType';
-import isHiddenFromScreenReader from '../util/isHiddenFromScreenReader';
+import { getProp, getLiteralPropValue } from "jsx-ast-utils";
+import includes from "array-includes";
+import stringIncludes from "string.prototype.includes";
+import safeRegexTest from "safe-regex-test";
+import { generateObjSchema, arraySchema } from "../util/schemas";
+import getElementType from "../util/getElementType";
+import isHiddenFromScreenReader from "../util/isHiddenFromScreenReader";
 
-const REDUNDANT_WORDS = [
-  'image',
-  'photo',
-  'picture',
-];
+const REDUNDANT_WORDS = ["image", "photo", "picture"];
 
-const errorMessage = 'Redundant alt attribute. Screen-readers already announce `img` tags as an image. You don’t need to use the words `image`, `photo,` or `picture` (or any specified custom words) in the alt prop.';
+const errorMessage =
+  'alt 속성에 "image", "photo", "picture"와 같은 단어는 불필요합니다. 스크린 리더는 이미 이미지를 인식합니다.';
 
 const schema = generateObjSchema({
   components: arraySchema,
@@ -42,8 +39,8 @@ function containsRedundantWord(value, redundantWords) {
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/img-redundant-alt.md',
-      description: 'Enforce `<img>` alt prop does not contain the word "image", "picture", or "photo".',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/img-redundant-alt.md",
+      description: "`<img>` 태그의 `alt` 속성에 중복된 단어가 포함되지 않도록 합니다.",
     },
     schema: [schema],
   },
@@ -54,7 +51,7 @@ export default {
       JSXOpeningElement: (node) => {
         const options = context.options[0] || {};
         const componentOptions = options.components || [];
-        const typesToValidate = ['img'].concat(componentOptions);
+        const typesToValidate = ["img"].concat(componentOptions);
         const nodeType = elementType(node);
 
         // Only check 'label' elements and custom types.
@@ -62,7 +59,7 @@ export default {
           return;
         }
 
-        const altProp = getProp(node.attributes, 'alt');
+        const altProp = getProp(node.attributes, "alt");
         // Return if alt prop is not present.
         if (altProp === undefined) {
           return;
@@ -71,12 +68,10 @@ export default {
         const value = getLiteralPropValue(altProp);
         const isVisible = isHiddenFromScreenReader(nodeType, node.attributes) === false;
 
-        const {
-          words = [],
-        } = options;
+        const { words = [] } = options;
         const redundantWords = REDUNDANT_WORDS.concat(words);
 
-        if (typeof value === 'string' && isVisible) {
+        if (typeof value === "string" && isVisible) {
           const hasRedundancy = containsRedundantWord(value, redundantWords);
 
           if (hasRedundancy === true) {

@@ -9,21 +9,21 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { getProp, getLiteralPropValue } from 'jsx-ast-utils';
-import type { JSXElement } from 'ast-types-flow';
-import includes from 'array-includes';
-import { generateObjSchema, arraySchema } from '../util/schemas';
-import type { ESLintConfig, ESLintContext, ESLintVisitorSelectorConfig } from '../../flow/eslint';
-import getElementType from '../util/getElementType';
-import isDOMElement from '../util/isDOMElement';
-import isHiddenFromScreenReader from '../util/isHiddenFromScreenReader';
-import isInteractiveElement from '../util/isInteractiveElement';
-import isInteractiveRole from '../util/isInteractiveRole';
-import mayHaveAccessibleLabel from '../util/mayHaveAccessibleLabel';
+import { getProp, getLiteralPropValue } from "jsx-ast-utils";
+import type { JSXElement } from "ast-types-flow";
+import includes from "array-includes";
+import { generateObjSchema, arraySchema } from "../util/schemas";
+import type { ESLintConfig, ESLintContext, ESLintVisitorSelectorConfig } from "../../flow/eslint";
+import getElementType from "../util/getElementType";
+import isDOMElement from "../util/isDOMElement";
+import isHiddenFromScreenReader from "../util/isHiddenFromScreenReader";
+import isInteractiveElement from "../util/isInteractiveElement";
+import isInteractiveRole from "../util/isInteractiveRole";
+import mayHaveAccessibleLabel from "../util/mayHaveAccessibleLabel";
 
-const errorMessage = 'A control must be associated with a text label.';
+const errorMessage = "컨트롤 요소는 반드시 텍스트 레이블과 연결되어 있어야 합니다.";
 
-const ignoreList = ['link'];
+const ignoreList = ["link"];
 
 const schema = generateObjSchema({
   labelAttributes: arraySchema,
@@ -31,8 +31,8 @@ const schema = generateObjSchema({
   ignoreElements: arraySchema,
   ignoreRoles: arraySchema,
   depth: {
-    description: 'JSX tree depth limit to check for accessible label',
-    type: 'integer',
+    description: "JSX 트리 내에서 label 탐색 깊이",
+    type: "integer",
     minimum: 0,
   },
 });
@@ -40,8 +40,8 @@ const schema = generateObjSchema({
 export default ({
   meta: {
     docs: {
-      description: 'Enforce that a control (an interactive element) has a text label.',
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/control-has-associated-label.md',
+      description: "인터랙티브 요소는 반드시 텍스트 레이블과 연결되어야 합니다.",
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/control-has-associated-label.md",
     },
     schema: [schema],
   },
@@ -49,18 +49,13 @@ export default ({
   create: (context: ESLintContext): ESLintVisitorSelectorConfig => {
     const elementType = getElementType(context);
     const options = context.options[0] || {};
-    const {
-      labelAttributes = [],
-      controlComponents = [],
-      ignoreElements = [],
-      ignoreRoles = [],
-    } = options;
+    const { labelAttributes = [], controlComponents = [], ignoreElements = [], ignoreRoles = [] } = options;
 
     const newIgnoreElements = new Set([].concat(ignoreElements, ignoreList));
 
     const rule = (node: JSXElement): void => {
       const tag = elementType(node.openingElement);
-      const role = getLiteralPropValue(getProp(node.openingElement.attributes, 'role'));
+      const role = getLiteralPropValue(getProp(node.openingElement.attributes, "role"));
       // Ignore interactive elements that might get their label from a source
       // that cannot be discerned from static analysis, like
       // <label><input />Save</label>
@@ -83,26 +78,15 @@ export default ({
       }
 
       let hasAccessibleLabel = true;
-      if (
-        nodeIsInteractiveElement
-        || (
-          nodeIsDOMElement
-          && nodeIsInteractiveRole
-        )
-        || nodeIsControlComponent
-
-      ) {
+      if (nodeIsInteractiveElement || (nodeIsDOMElement && nodeIsInteractiveRole) || nodeIsControlComponent) {
         // Prevent crazy recursion.
-        const recursionDepth = Math.min(
-          options.depth === undefined ? 2 : options.depth,
-          25,
-        );
+        const recursionDepth = Math.min(options.depth === undefined ? 2 : options.depth, 25);
         hasAccessibleLabel = mayHaveAccessibleLabel(
           node,
           recursionDepth,
           labelAttributes,
           elementType,
-          controlComponents,
+          controlComponents
         );
       }
 

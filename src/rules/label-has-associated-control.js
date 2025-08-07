@@ -9,21 +9,21 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { hasProp, getProp, getPropValue } from 'jsx-ast-utils';
-import type { JSXElement } from 'ast-types-flow';
-import minimatch from 'minimatch';
-import { generateObjSchema, arraySchema } from '../util/schemas';
-import type { ESLintConfig, ESLintContext, ESLintVisitorSelectorConfig } from '../../flow/eslint';
-import getElementType from '../util/getElementType';
-import mayContainChildComponent from '../util/mayContainChildComponent';
-import mayHaveAccessibleLabel from '../util/mayHaveAccessibleLabel';
+import { hasProp, getProp, getPropValue } from "jsx-ast-utils";
+import type { JSXElement } from "ast-types-flow";
+import minimatch from "minimatch";
+import { generateObjSchema, arraySchema } from "../util/schemas";
+import type { ESLintConfig, ESLintContext, ESLintVisitorSelectorConfig } from "../../flow/eslint";
+import getElementType from "../util/getElementType";
+import mayContainChildComponent from "../util/mayContainChildComponent";
+import mayHaveAccessibleLabel from "../util/mayHaveAccessibleLabel";
 
 const errorMessages = {
-  accessibleLabel: 'A form label must have accessible text.',
-  htmlFor: 'A form label must have a valid htmlFor attribute.',
-  nesting: 'A form label must have an associated control as a descendant.',
-  either: 'A form label must either have a valid htmlFor attribute or a control as a descendant.',
-  both: 'A form label must have a valid htmlFor attribute and a control as a descendant.',
+  accessibleLabel: "폼 레이블에는 접근 가능한 텍스트가 포함되어야 합니다.",
+  htmlFor: "폼 레이블은 유효한 htmlFor 속성을 가져야 합니다.",
+  nesting: "폼 레이블은 내부에 연결된 폼 컨트롤을 자식으로 포함해야 합니다.",
+  either: "폼 레이블은 htmlFor 속성 또는 자식 폼 컨트롤 중 하나를 가져야 합니다.",
+  both: "폼 레이블은 htmlFor 속성과 자식 폼 컨트롤 둘 다 가져야 합니다.",
 };
 
 const schema = generateObjSchema({
@@ -31,20 +31,20 @@ const schema = generateObjSchema({
   labelAttributes: arraySchema,
   controlComponents: arraySchema,
   assert: {
-    description: 'Assert that the label has htmlFor, a nested label, both or either',
-    type: 'string',
-    enum: ['htmlFor', 'nesting', 'both', 'either'],
+    description: "htmlFor, nesting, both, either 중 어떤 연결 방식을 검사할지 지정",
+    type: "string",
+    enum: ["htmlFor", "nesting", "both", "either"],
   },
   depth: {
-    description: 'JSX tree depth limit to check for accessible label',
-    type: 'integer',
+    description: "접근 가능한 label 검색 깊이 제한",
+    type: "integer",
     minimum: 0,
   },
 });
 
 const validateHtmlFor = (node, context) => {
   const { settings } = context;
-  const htmlForAttributes = settings['jsx-a11y']?.attributes?.for ?? ['htmlFor'];
+  const htmlForAttributes = settings["jsx-a11y"]?.attributes?.for ?? ["htmlFor"];
 
   for (let i = 0; i < htmlForAttributes.length; i += 1) {
     const attribute = htmlForAttributes[i];
@@ -62,8 +62,8 @@ const validateHtmlFor = (node, context) => {
 export default ({
   meta: {
     docs: {
-      description: 'Enforce that a `label` tag has a text label and an associated control.',
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/label-has-associated-control.md',
+      description: "`<label>` 태그에 접근 가능한 텍스트와 연결된 폼 컨트롤이 있어야 합니다.",
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/label-has-associated-control.md",
     },
     schema: [schema],
   },
@@ -71,8 +71,8 @@ export default ({
   create: (context: ESLintContext): ESLintVisitorSelectorConfig => {
     const options = context.options[0] || {};
     const labelComponents = options.labelComponents || [];
-    const assertType = options.assert || 'either';
-    const labelComponentNames = ['label'].concat(labelComponents);
+    const assertType = options.assert || "either";
+    const labelComponentNames = ["label"].concat(labelComponents);
     const elementType = getElementType(context);
 
     const rule = (node: JSXElement) => {
@@ -82,33 +82,27 @@ export default ({
       }
 
       const controlComponents = [].concat(
-        'input',
-        'meter',
-        'output',
-        'progress',
-        'select',
-        'textarea',
-        options.controlComponents || [],
+        "input",
+        "meter",
+        "output",
+        "progress",
+        "select",
+        "textarea",
+        options.controlComponents || []
       );
       // Prevent crazy recursion.
-      const recursionDepth = Math.min(
-        options.depth === undefined ? 2 : options.depth,
-        25,
-      );
+      const recursionDepth = Math.min(options.depth === undefined ? 2 : options.depth, 25);
       const hasHtmlFor = validateHtmlFor(node.openingElement, context);
       // Check for multiple control components.
-      const hasNestedControl = controlComponents.some((name) => mayContainChildComponent(
-        node,
-        name,
-        recursionDepth,
-        elementType,
-      ));
+      const hasNestedControl = controlComponents.some((name) =>
+        mayContainChildComponent(node, name, recursionDepth, elementType)
+      );
       const hasAccessibleLabel = mayHaveAccessibleLabel(
         node,
         recursionDepth,
         options.labelAttributes,
         elementType,
-        controlComponents,
+        controlComponents
       );
 
       // Bail out immediately if we don't have an accessible label.
@@ -120,7 +114,7 @@ export default ({
         return;
       }
       switch (assertType) {
-        case 'htmlFor':
+        case "htmlFor":
           if (!hasHtmlFor) {
             context.report({
               node: node.openingElement,
@@ -128,7 +122,7 @@ export default ({
             });
           }
           break;
-        case 'nesting':
+        case "nesting":
           if (!hasNestedControl) {
             context.report({
               node: node.openingElement,
@@ -136,7 +130,7 @@ export default ({
             });
           }
           break;
-        case 'both':
+        case "both":
           if (!hasHtmlFor || !hasNestedControl) {
             context.report({
               node: node.openingElement,
@@ -144,7 +138,7 @@ export default ({
             });
           }
           break;
-        case 'either':
+        case "either":
           if (!hasHtmlFor && !hasNestedControl) {
             context.report({
               node: node.openingElement,

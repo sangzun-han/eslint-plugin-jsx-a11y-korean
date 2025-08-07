@@ -7,29 +7,22 @@
 // Rule Definition
 // ----------------------------------------------------------------------------
 
-import { generateObjSchema, arraySchema } from '../util/schemas';
-import getElementType from '../util/getElementType';
-import hasAccessibleChild from '../util/hasAccessibleChild';
-import isHiddenFromScreenReader from '../util/isHiddenFromScreenReader';
+import { generateObjSchema, arraySchema } from "../util/schemas";
+import getElementType from "../util/getElementType";
+import hasAccessibleChild from "../util/hasAccessibleChild";
+import isHiddenFromScreenReader from "../util/isHiddenFromScreenReader";
 
-const errorMessage = 'Headings must have content and the content must be accessible by a screen reader.';
+const errorMessage = "제목 요소는 반드시 콘텐츠를 포함해야 하며, 해당 콘텐츠는 스크린 리더가 접근 가능해야 합니다.";
 
-const headings = [
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-];
+const headings = ["h1", "h2", "h3", "h4", "h5", "h6"];
 
 const schema = generateObjSchema({ components: arraySchema });
 
 export default {
   meta: {
     docs: {
-      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/heading-has-content.md',
-      description: 'Enforce heading (`h1`, `h2`, etc) elements contain accessible content.',
+      url: "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/heading-has-content.md",
+      description: "모든 heading(`h1`, `h2` 등) 요소는 접근 가능한 콘텐츠를 포함해야 합니다.",
     },
     schema: [schema],
   },
